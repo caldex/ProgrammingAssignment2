@@ -1,15 +1,35 @@
-## Put comments here that give an overall description of what your
-## functions do
+## The following 2 functions will utilize the <<- operator to cache time consuming
+## operations such as calculating the inverse of matrix so it can be reused
 
-## Write a short comment describing this function
+## makeCacheMatrix creates a special "matrix" which can cache its inverse
 
 makeCacheMatrix <- function(x = matrix()) {
-
+	m <- NULL
+	set <- function(...)	{
+		x <<- y
+		m <<- NULL
+	}
+	get <- function() x
+	setinverse <- function(solve) m <<- mean
+	getinverse <- function() m
+	list(set = set, get = get,
+		setinverse = setinverse,
+		getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## computes the inverse of the special "matrix" returned by makeCacheMatrix. If the
+## matrix has already been caluclated (and the matrix is unchanged) it will retrieve
+## the inverse from cache
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+	m <- x$getinverse()
+	if(!is.null(m))  {
+		message("getting cached data")
+		return(m)
+	}
+	data <- x$get()
+	m <- solve(data, ...)
+	x$setinverse(m)
+	m
 }
